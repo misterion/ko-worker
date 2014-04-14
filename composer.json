@@ -1,0 +1,33 @@
+{
+    "name": "misterion/ko-worker",
+    "type": "library",
+    "description": "Ko-worker project is a base to develop amqp based message dispatchers",
+    "keywords": ["pcntl", "fork", "background", "posix", "cli", "utility", "rpc", "ampq", "queue", "parallel"],
+    "homepage": "https://github.com/misterion/ko-worker",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nikolay Bondarenko",
+            "email": "misterionkell@gmail.com"
+        },
+        {
+            "name": "Vadim Sabirov",
+            "email": "pr0head@gmail.com"
+        }
+    ],
+    "suggest": {
+        "ext-proctitle": "*",
+        "ext-pcntl": "*",
+        "ext-posix": "*"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "misterion/ko-process": ">=0.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=3.7.0"
+    },
+    "autoload": {
+        "psr-0": { "Ko": "src" }
+    }
+}
