@@ -61,6 +61,19 @@ class ProducerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDefaultOptions, $p->getExchangeOptions());
     }
 
+    public function testSetExchangeOptions()
+    {
+        $expectedOptions = [
+            'name' => time(),
+            'type' => 'direct',
+        ];
+
+        $p = new Producer($this->channelMock, $this->exchangeMock);
+        $expectedDefaultOptions = $p->getExchangeOptions();
+        $p->setExchangeOptions($expectedOptions);
+        $this->assertEquals(array_merge($expectedDefaultOptions, $expectedOptions), $p->getExchangeOptions());
+    }
+
     public function testPublishMessageShouldDeclareExchangeOnlyOnce()
     {
         $this->exchangeMock->expects($this->once())
@@ -81,5 +94,48 @@ class ProducerTest extends PHPUnit_Framework_TestCase
         $p = new Producer($this->channelMock, $this->exchangeMock);
         $p->setExchangeOptions(['name' => 'myExchange', 'type' => 'someType']);
         $p->publish('someMessage');
+    }
+
+    /**
+     * @dataProvider flagProvider
+     */
+    public function testFlagOptions($passive, $durable, $autoDelete, $noWait, $internal, $flag)
+    {
+        $p = new Producer($this->channelMock, $this->exchangeMock);
+        $options = [
+            'name' => 'test',
+            'type' => 'direct',
+            'passive' => false,
+            'durable' => false,
+            'auto_delete' => false,
+            'nowait' => false,
+            'internal' => false,
+        ];
+        $p->setExchangeOptions($options);
+        $this->assertEquals(0, $p->getFlagsFromOptions());
+
+        $options = [
+            'name' => 'test',
+            'type' => 'direct',
+            'passive' => $passive,
+            'durable' => $durable,
+            'auto_delete' => $autoDelete,
+            'nowait' => $noWait,
+            'internal' => $internal,
+        ];
+        $p->setExchangeOptions($options);
+        $this->assertEquals($flag, $p->getFlagsFromOptions());
+    }
+
+    public function flagProvider()
+    {
+        return [
+            [true, false, false, false, false, AMQP_PASSIVE],
+            [false, true, false, false, false, AMQP_DURABLE],
+            [false, false, true, false, false, AMQP_AUTODELETE],
+            [false, false, false, true, false, AMQP_NOWAIT],
+            [false, false, false, false, true, AMQP_INTERNAL],
+            [true, true, true, true, true, AMQP_PASSIVE | AMQP_DURABLE | AMQP_AUTODELETE | AMQP_NOWAIT | AMQP_INTERNAL],
+        ];
     }
 }
