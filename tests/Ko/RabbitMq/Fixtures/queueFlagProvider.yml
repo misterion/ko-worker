@@ -1,0 +1,6 @@
+- {passive: false, durable: false, auto_delete: false, nowait: false, flagResult: 0}
+- {passive: true, durable: false, auto_delete: false, nowait: false, flagResult: 4}
+- {passive: false, durable: true, auto_delete: false, nowait: false, flagResult: 2}
+- {passive: false, durable: false, auto_delete: true, nowait: false, flagResult: 16}
+- {passive: false, durable: false, auto_delete: false, nowait: true, flagResult: 8192}
+- {passive: true, durable: true, auto_delete: true, nowait: true, flagResult: 8214}
