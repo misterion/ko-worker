@@ -12,5 +12,6 @@ install:
 
 before_script:
   echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  wget https://phar.phpunit.de/phpunit.phar
 
-script: phpunit --verbose --coverage-text --configuration phpunit.xml
+script: php phpunit.phar --verbose --coverage-text --configuration phpunit.xml
