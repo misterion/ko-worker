@@ -1,11 +1,16 @@
 language: php
 
 php:
-    - 5.4
-    - 5.5
+  - 5.4
+  - 5.5
+
+services:
+  - rabbitmq
+
+install:
+  composer install --no-dev
 
 before_script:
-    - wget http://getcomposer.org/composer.phar
-    - php composer.phar install --dev
+  echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
-script: phpunit --coverage-text
+script: phpunit --verbose --coverage-text --configuration phpunit.xml
