@@ -43,19 +43,6 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDefaultOptions, $c->getQueueOptions());
     }
 
-    public function testSetQueueOptions()
-    {
-        $expectedOptions = [
-            'name' => '1',
-            'passive' => true,
-        ];
-
-        $c = new Consumer($this->channelMock, $this->queueMock);
-        $expectedDefaultOptions = $c->getQueueOptions();
-        $c->setQueueOptions($expectedOptions);
-        $this->assertEquals(array_merge($expectedDefaultOptions, $expectedOptions), $c->getQueueOptions());
-    }
-
     public function testConsumeShouldDeclareQueueOnlyOnce()
     {
         $this->queueMock->expects($this->once())
@@ -64,6 +51,7 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
         $c = new Consumer($this->channelMock, $this->queueMock);
         $c->setQueueOptions(['name' => 'myQueue', 'binding' => ['name' => 'myExchange', 'routing-keys' => '']]);
         $c->consume(function(){});
+        // Using mock object without locking the previous call
         $c->consume(function(){});
     }
 
@@ -80,7 +68,7 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
 
     public function testMultipleBinding()
     {
-        $this->queueMock->expects($this->at(2))
+        $this->queueMock->expects($this->exactly(2))
             ->method('bind')
             ->with($this->equalTo('testName'), $this->equalTo('testKey'));
 
@@ -94,19 +82,11 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider flagProvider
+     * @dataProvider queueFlagProvider
      */
     public function testFlagOptions($passive, $durable, $autoDelete, $noWait, $flag)
     {
         $c = new Consumer($this->channelMock, $this->queueMock);
-        $options = [
-            'passive' => false,
-            'durable' => false,
-            'auto_delete' => false,
-            'nowait' => false,
-        ];
-        $c->setQueueOptions($options);
-        $this->assertEquals(0, $c->getFlagsFromOptions());
 
         $options = [
             'passive' => $passive,
@@ -118,14 +98,8 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($flag, $c->getFlagsFromOptions());
     }
 
-    public function flagProvider()
+    public function queueFlagProvider()
     {
-        return [
-            [true, false, false,false, AMQP_PASSIVE],
-            [false, true, false,false, AMQP_DURABLE],
-            [false, false, true, false, AMQP_AUTODELETE],
-            [false, false, false, true, AMQP_NOWAIT],
-            [true, true, true, true, AMQP_PASSIVE | AMQP_DURABLE | AMQP_AUTODELETE | AMQP_NOWAIT],
-        ];
+        return \Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . "/Fixtures/queueFlagProvider.yml"));
     }
 }

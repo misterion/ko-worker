@@ -1,0 +1,7 @@
+- {passive: false, durable: false, auto_delete: false, nowait: false, internal: false, flagResult: 0}
+- {passive: true, durable: false, auto_delete: false, nowait: false, internal: false, flagResult: 4}
+- {passive: false, durable: true, auto_delete: false, nowait: false, internal: false, flagResult: 2}
+- {passive: false, durable: false, auto_delete: true, nowait: false, internal: false, flagResult: 16}
+- {passive: false, durable: false, auto_delete: false, nowait: true, internal: false, flagResult: 8192}
+- {passive: false, durable: false, auto_delete: false, nowait: false, internal: true, flagResult: 32}
+- {passive: true, durable: true, auto_delete: true, nowait: true, internal: true, flagResult: 8246}
