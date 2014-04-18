@@ -112,4 +112,29 @@ class ProducerTest extends PHPUnit_Framework_TestCase
         $p->setExchangeOptions(['name' => 'myExchange', 'type' => 'someType']);
         $p->publish('someMessage');
     }
+
+    /**
+     * @dataProvider exchangeFlagProvider
+     */
+    public function testFlagOptions($passive, $durable, $autoDelete, $noWait, $internal, $flag)
+    {
+        $p = new Producer($this->channelMock, $this->exchangeMock);
+
+        $options = [
+            'name' => 'test',
+            'type' => 'direct',
+            'passive' => $passive,
+            'durable' => $durable,
+            'auto_delete' => $autoDelete,
+            'nowait' => $noWait,
+            'internal' => $internal,
+        ];
+        $p->setExchangeOptions($options);
+        $this->assertEquals($flag, $p->getFlagsFromOptions());
+    }
+
+    public function exchangeFlagProvider()
+    {
+        return \Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . "/Fixtures/exchangeFlagProvider.yml"));
+    }
 }

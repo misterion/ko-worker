@@ -91,7 +91,7 @@ class Consumer
     /**
      * @return int
      */
-    protected function getFlagsFromOptions()
+    public function getFlagsFromOptions()
     {
         $flags = ($this->queueOptions['passive'] ? AMQP_PASSIVE : AMQP_NOPARAM)
             | ($this->queueOptions['durable'] ? AMQP_DURABLE : AMQP_NOPARAM)
@@ -99,6 +99,26 @@ class Consumer
             | ($this->queueOptions['nowait'] ? AMQP_NOWAIT : AMQP_NOPARAM);
 
         return $flags;
+    }
+
+    /**
+     * @throws \InvalidArgumentException
+     *
+     * @param  array $options
+     *
+     * @return void
+     */
+    public function setQueueOptions(array $options = [])
+    {
+        $this->queueOptions = array_merge($this->queueOptions, $options);
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueueOptions()
+    {
+        return $this->queueOptions;
     }
 
     protected function queueDeclare()

@@ -109,7 +109,7 @@ class Producer
     /**
      * @return int
      */
-    protected function getFlagsFromOptions()
+    public function getFlagsFromOptions()
     {
         $flags = ($this->exchangeOptions['passive'] ? AMQP_PASSIVE : AMQP_NOPARAM)
             | ($this->exchangeOptions['durable'] ? AMQP_DURABLE : AMQP_NOPARAM)
