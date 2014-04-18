@@ -68,14 +68,18 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
 
     public function testMultipleBinding()
     {
-        $this->queueMock->expects($this->exactly(2))
+        $this->queueMock->expects($this->at(1))
             ->method('bind')
-            ->with($this->equalTo('testName'), $this->equalTo('testKey'));
+            ->with($this->equalTo('testName1'), $this->equalTo('testKey1'));
+
+        $this->queueMock->expects($this->at(2))
+            ->method('bind')
+            ->with($this->equalTo('testName2'), $this->equalTo('testKey2'));
 
         $c = new Consumer($this->channelMock, $this->queueMock);
         $binding = [
-            ['name' => 'testName', 'routing-keys' => 'testKey'],
-            ['name' => 'testName', 'routing-keys' => 'testKey'],
+            ['name' => 'testName1', 'routing-keys' => 'testKey1'],
+            ['name' => 'testName2', 'routing-keys' => 'testKey2'],
         ];
         $c->setQueueOptions(['name' => 'myQueue', 'binding' => $binding]);
         $c->consume(function(){return 'someMessage';});
