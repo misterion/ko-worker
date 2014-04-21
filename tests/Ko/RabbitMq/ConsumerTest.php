@@ -123,7 +123,8 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
     public function testSetQosCountInChannel()
     {
         $this->channelMock->expects($this->once())
-            ->method('setPrefetchCount');
+            ->method('setPrefetchCount')
+            ->with($this->equalTo(3));
 
         $c = new Consumer($this->channelMock, $this->queueMock);
         $c->setQueueOptions(
