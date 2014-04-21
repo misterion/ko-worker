@@ -78,14 +78,25 @@ class Consumer
     /**
      * @param callable $callback
      * @param int $flags
+     * @param string $consumerTag
+     *
+     * @throws \DomainException
      */
-    public function consume(callable $callback, $flags = AMQP_NOPARAM)
+    public function consume(callable $callback, $flags = AMQP_NOPARAM, $consumerTag = null)
     {
+        if (isset($this->queueOptions['qos_count'])) {
+            if ($flags & AMQP_AUTOACK) {
+                throw new \DomainException('Can not be used AUTOASK message and QOS');
+            }
+
+            $this->channel->setPrefetchCount($this->queueOptions['qos_count']);
+        }
+
         if (!$this->queueDeclared) {
             $this->queueDeclare();
         }
 
-        $this->queue->consume($callback, $flags);
+        $this->queue->consume($callback, $flags, $consumerTag);
     }
 
     /**
