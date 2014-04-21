@@ -31,6 +31,13 @@
  */
 use Ko\AmqpBroker;
 
+/**
+ * Class AmqpBrokerTest
+ *
+ * @package Ko
+ * @author Vadim Sabirov <pr0head@gmail.com>
+ * @version 1.0.0
+ */
 class AmqpBrokerTest extends PHPUnit_Framework_TestCase
 {
     /**
@@ -44,11 +51,9 @@ class AmqpBrokerTest extends PHPUnit_Framework_TestCase
 
     public function testShouldCacheCreatedProducer()
     {
-        $config = [
-            'producers' => [
-                'test' => []
-            ],
-        ];
+        $producerMock = $this->getMockBuilder('\Ko\RabbitMq\Producer')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $mock = $this->getMockBuilder('\Ko\AmqpBroker')
             ->disableOriginalConstructor()
@@ -58,9 +63,9 @@ class AmqpBrokerTest extends PHPUnit_Framework_TestCase
         $mock->expects($this->once())
             ->method('createProducer')
             ->with($this->equalTo('test'))
-            ->will($this->returnValue(1));
+            ->will($this->returnValue($producerMock));
 
-        $mock->setConfig($config);
+        $mock->setConfig($this->getConfig());
         $mock->getProducer('test');
         $mock->getProducer('test');
     }
@@ -76,11 +81,9 @@ class AmqpBrokerTest extends PHPUnit_Framework_TestCase
 
     public function testShouldCacheCreatedConsumer()
     {
-        $config = [
-            'consumers' => [
-                'test' => []
-            ],
-        ];
+        $consumerMock = $this->getMockBuilder('\Ko\RabbitMq\Consumer')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $mock = $this->getMockBuilder('\Ko\AmqpBroker')
             ->disableOriginalConstructor()
@@ -90,11 +93,23 @@ class AmqpBrokerTest extends PHPUnit_Framework_TestCase
         $mock->expects($this->once())
             ->method('createConsumer')
             ->with($this->equalTo('test'))
-            ->will($this->returnValue(1));
+            ->will($this->returnValue($consumerMock));
 
-        $mock->setConfig($config);
+        $mock->setConfig($this->getConfig());
         $mock->getConsumer('test');
         $mock->getConsumer('test');
+    }
+
+    private function getConfig()
+    {
+        return [
+            'producers' => [
+                'test' => []
+            ],
+            'consumers' => [
+                'test' => []
+            ],
+        ];
     }
 }
  
