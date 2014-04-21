@@ -30,10 +30,11 @@ class Child
 
     /**
      * @param mixed $executorClass
+     * @throws \InvalidArgumentException
      */
     public function setExecutorClass($executorClass)
     {
-        if (!is_subclass_of($executorClass, 'Ko\Worker\ActionInterface')) {
+        if (!is_subclass_of($executorClass, '\Ko\Worker\ActionInterface')) {
             throw new \InvalidArgumentException('Executor class ' . $executorClass . ' should implements Ko\Worker\ActionInterface');
         }
 

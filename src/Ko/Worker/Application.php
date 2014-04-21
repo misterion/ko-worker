@@ -104,12 +104,20 @@ class Application
         $config = Yaml::parse(file_get_contents($this->opts['config']));
         $queue = $this->opts['q'];
 
+        if (empty($queue)) {
+            throw new \DomainException('You must define queue name');
+        }
+
+        if (!isset($config['consumers'][$queue]['callback'])) {
+            throw new \DomainException('You must define queue callback function name');
+        }
+
         return Closure::bind(
             function (Process $process) use ($config, $queue) {
                 $child = new Child();
                 $child->setConfig($config);
                 $child->setName($queue);
-                $child->setExecutorClass('\Ko\Worker\Sample');
+                $child->setExecutorClass($config['consumers'][$queue]['callback']);
                 $child->run($process);
             },
             null

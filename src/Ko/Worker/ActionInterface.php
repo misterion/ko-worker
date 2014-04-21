@@ -6,5 +6,5 @@ use AMQPQueue;
 
 interface ActionInterface
 {
-    public function execute(AMQPEnvelope $envelope, AMQPQueue $queue);
+    public function execute(\AMQPEnvelope $envelope, \AMQPQueue $queue);
 }
