@@ -22,7 +22,7 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
         $this->queueMock  = $this->getMockBuilder('\AMQPQueue')
             ->disableProxyingToOriginalMethods()
             ->disableOriginalConstructor()
-            ->setMethods(['consume', 'bind', 'declareQueue'])
+            ->setMethods(['consume', 'bind', 'declareQueue', 'setPrefetchCount'])
             ->getMock();
     }
 
@@ -105,5 +105,31 @@ class ConsumerTest extends PHPUnit_Framework_TestCase
     public function queueFlagProvider()
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . "/Fixtures/queueFlagProvider.yml"));
+    }
+
+    /**
+     * @expectedException \DomainException
+     */
+    public function testExceptionWithAutoAskAndQosEnabled()
+    {
+        $c = new Consumer($this->channelMock, $this->queueMock);
+        $c->setQueueOptions(
+            ['name' => 'myQueue', 'binding' => ['name' => 'testName', 'routing-keys' => 'testKey'], 'qos_count' => 3]
+        );
+
+        $c->consume(function(){}, AMQP_AUTOACK);
+    }
+
+    public function testSetQosCountInChannel()
+    {
+        $this->channelMock->expects($this->once())
+            ->method('setPrefetchCount');
+
+        $c = new Consumer($this->channelMock, $this->queueMock);
+        $c->setQueueOptions(
+            ['name' => 'myQueue', 'binding' => ['name' => 'testName', 'routing-keys' => 'testKey'], 'qos_count' => 3]
+        );
+
+        $c->consume(function(){});
     }
 }
