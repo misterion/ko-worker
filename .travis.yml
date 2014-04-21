@@ -8,9 +8,11 @@ services:
   - rabbitmq
 
 install:
-  composer install --no-dev
+  - wget https://phar.phpunit.de/phpunit.phar
 
 before_script:
-  echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - composer install --no-dev
+  - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
-script: phpunit --verbose --coverage-text --configuration phpunit.xml
+script:
+  - php phpunit.phar --verbose --coverage-text --configuration phpunit.xml
