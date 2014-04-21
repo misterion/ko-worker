@@ -42,6 +42,7 @@ use AMQPChannel;
  *
  * @package Ko
  * @author Nikolay Bondarenko <misterionkell@gmail.com>
+ * @author Vadim Sabirov <pr0head@gmail.com>
  * @version 1.0.0
  */
 class AmqpBroker
@@ -78,7 +79,7 @@ class AmqpBroker
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return Producer
      * @throws \InvalidArgumentException
@@ -89,26 +90,53 @@ class AmqpBroker
             throw new \InvalidArgumentException();
         }
 
-        return $this->createProducer($name);
+        if (!isset($this->producers[$name])) {
+            $this->producers[$name] = $this->createProducer($name);
+        }
+
+        return $this->producers[$name];
     }
 
     protected function createProducer($name)
     {
-        if (isset($this->producers[$name])) {
-            return $this->producers[$name];
-        }
-
         $conf = $this->config['producers'][$name];
         $conn = $this->connFactory->getConnection($conf['connection']);
 
         $p = new Producer(new AMQPChannel($conn));
         $p->setExchangeOptions($conf['exchange_options']);
 
-        $this->producers[$name] = $p;
         return $p;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return Consumer
+     * @throws \InvalidArgumentException
+     */
     public function getConsumer($name)
     {
+        if (!isset($this->config['consumers'][$name])) {
+            throw new \InvalidArgumentException();
+        }
+
+        if (!isset($this->consumers[$name])) {
+            $this->consumers[$name] = $this->createConsumer($name);
+        }
+
+        return $this->consumers[$name];
+    }
+
+    protected function createConsumer($name)
+    {
+        $conf = $this->config['consumers'][$name];
+        $conn = $this->connFactory->getConnection($conf['connection']);
+
+        $c = new Consumer(new AMQPChannel($conn));
+        $c->setQueueOptions($conf['queue_options']);
+
+        $this->consumers[$name] = $c;
+
+        return $c;
     }
 }
