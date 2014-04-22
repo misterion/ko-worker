@@ -139,7 +139,7 @@ Now let's say that you want to process some social network activity in the backg
 public function addFriendAction($name)
 {
     $msg = array('user_id' => 1235, 'friend_id' => '67890');
-    $this->broker->getProducer('social_activity)->publish(json_encode($msg));
+    $this->broker->getProducer('social_activity')->publish(json_encode($msg));
 }
 ```
 
@@ -165,11 +165,13 @@ consumers:
   class: \MyProject\TestAction
 ```
 
-As we see there, the __class__ option has a reference to an __\\MyProject\\TestAction__ class. It should implements Ko\Worker\ActionInterface.
+As we see there, the __class__ option has a reference to an __\\MyProject\\TestAction__ class. It should implements __Ko\\Worker\\ActionInterface__.
 
 When the consumer gets a message from the server it will create and execute such class. If for testing or debugging purposes you need to specify a different class, then you can change it there.
 
-Apart from the callback we also specify the connection to use, the same way as we do with a __producer__. The remaining options are the the __queue\_options__. In the __queue\_options__ we will provide a __queue name__ and __binding__. Why?
+Apart from the callback we also specify the connection to use, the same way as we do with a __producer__. The remaining options are the the __queue\_options__. In the __queue\_options__ we will provide a __queue name__ and __binding__.
+
+Why?
 
 As we said, messages in AMQP are published to an __exchange__. This doesn't mean the message has reached a __queue__. For this to happen, first we need to create such __queue__ and then bind it to the __exchange__.
 
@@ -187,8 +189,13 @@ Now, how to run a consumer? There's a command for it that can be executed like t
 $ ./bin/ko -q social_activity -w 10
 ```
 
-What does this mean? We are executing the __social\_activity__ consumer telling it should use 10 child process to consuming.
-Every time the consumer receives a message from the server, it will execute the configured callback passing the AMQP message as an instance of the `AMQPEnvelope` class. The message body can be obtained by calling `$msg->getBody()`. By default the consumer will process messages in an __endless loop__ for some definition of _endless_.
+What does this mean?
+
+We are executing the __social\_activity__ consumer telling it should use 10 child process to consuming.
+
+Every time the consumer receives a message from the server, it will execute the configured callback passing the AMQP message as an instance of the `AMQPEnvelope` class. The message body can be obtained by calling `$msg->getBody()`.
+
+By default the consumer will process messages in an __endless loop__ for some definition of _endless_.
 
 UNDONE
 
