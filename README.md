@@ -121,6 +121,7 @@ queue_options:
     binding:
         - {name: "social_activity_exchange", routing_keys: 'social.#.addFriends'}
         - {name: "social_activity_exchange", routing_keys: '*.removeFriends'}
+```
 
 ### Producers, Consumers, AqmBroker? ###
 
@@ -165,17 +166,18 @@ consumers:
 ```
 
 As we see there, the __class__ option has a reference to an __\\MyProject\\TestAction__ class. It should implements Ko\Worker\ActionInterface.
+
 When the consumer gets a message from the server it will create and execute such class. If for testing or debugging purposes you need to specify a different class, then you can change it there.
 
-Apart from the callback we also specify the connection to use, the same way as we do with a __producer__.
-The remaining options are the the __queue\_options__. In the __queue\_options__ we will provide a __queue name__ and __binding__. Why?
+Apart from the callback we also specify the connection to use, the same way as we do with a __producer__. The remaining options are the the __queue\_options__. In the __queue\_options__ we will provide a __queue name__ and __binding__. Why?
 
-As we said, messages in AMQP are published to an __exchange__.
-This doesn't mean the message has reached a __queue__.
-For this to happen, first we need to create such __queue__ and then bind it to the __exchange__.
+As we said, messages in AMQP are published to an __exchange__. This doesn't mean the message has reached a __queue__. For this to happen, first we need to create such __queue__ and then bind it to the __exchange__.
+
 The cool thing about this is that you can bind several __queues__ to one __exchange__, in that way one message can arrive to several destinations.
+
 The advantage of this approach is the __decoupling__ from the producer and the consumer.
 The producer does not care about how many consumers will process his messages.
+
 All it needs is that his message arrives to the server.
 In this way we can expand the actions we perform every time a friend added  without the need to change code in our controller.
 
