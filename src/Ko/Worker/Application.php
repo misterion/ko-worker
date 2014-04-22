@@ -105,11 +105,11 @@ class Application
         $queue = $this->opts['q'];
 
         if (empty($queue)) {
-            throw new \DomainException('You must define queue name');
+            throw new \DomainException('You must declare queue name');
         }
 
-        if (!isset($config['consumers'][$queue]['callback'])) {
-            throw new \DomainException('You must define queue callback function name');
+        if (!isset($config['consumers'][$queue]['class'])) {
+            throw new \DomainException('You must declare a class for the job');
         }
 
         return Closure::bind(
@@ -117,7 +117,7 @@ class Application
                 $child = new Child();
                 $child->setConfig($config);
                 $child->setName($queue);
-                $child->setExecutorClass($config['consumers'][$queue]['callback']);
+                $child->setExecutorClass($config['consumers'][$queue]['class']);
                 $child->run($process);
             },
             null

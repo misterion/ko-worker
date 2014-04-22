@@ -61,6 +61,7 @@ class Child
                 $queue->ack($envelope->getDeliveryTag());
             } catch (\Exception $e) {
                 $queue->nack($envelope->getDeliveryTag());
+                throw $e;
             }
 
             $process->setProcessTitle('ko-worker: child wait new envelope');

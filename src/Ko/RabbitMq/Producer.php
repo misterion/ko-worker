@@ -78,13 +78,13 @@ class Producer
         $this->channel = $channel;
     }
 
-    public function publish($message)
+    public function publish($message, $routingKey = null)
     {
         if (!$this->exchangeDeclared) {
             $this->exchangeDeclare();
         }
 
-        $this->exchange->publish($message);
+        $this->exchange->publish($message, $routingKey);
     }
 
     protected function exchangeDeclare()

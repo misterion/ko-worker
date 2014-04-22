@@ -87,7 +87,7 @@ class AmqpBroker
     public function getProducer($name)
     {
         if (!isset($this->config['producers'][$name])) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException('Not found settings for producer with name ' . $name);
         }
 
         if (!isset($this->producers[$name])) {
