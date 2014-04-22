@@ -78,13 +78,13 @@ class Producer
         $this->channel = $channel;
     }
 
-    public function publish($message, $routingKey = null)
+    public function publish($message, $routingKey = null, $flags = AMQP_NOPARAM, array $attributes = [])
     {
         if (!$this->exchangeDeclared) {
             $this->exchangeDeclare();
         }
 
-        $this->exchange->publish($message, $routingKey);
+        $this->exchange->publish($message, $routingKey, $flags, $attributes);
     }
 
     protected function exchangeDeclare()
