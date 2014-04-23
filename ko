@@ -30,7 +30,20 @@
  * @copyright 2014 Nikolay Bondarenko. All rights reserved.
  * @license MIT http://opensource.org/licenses/MIT
  */
-require_once __DIR__ . '/vendor/autoload.php';
+if (file_exists(__DIR__ . '/../../../../autoload.php')) {
+    // phpmd is part of a composer installation
+    require_once __DIR__ . '/../../../../autoload.php';
+} else {
+    set_include_path(
+        get_include_path()
+        . PATH_SEPARATOR . __DIR__ . '/../'
+        . PATH_SEPARATOR . __DIR__ . '/../../'
+        . PATH_SEPARATOR . __DIR__ . '/../../../'
+    );
+
+    require_once 'autoload.php';
+}
+
 
 $app = new Ko\Worker\Application();
 $app->setProcessManager(new Ko\ProcessManager());
