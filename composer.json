@@ -32,9 +32,6 @@
         "empi89/php-amqp-stubs": "dev-master"
     },
     "bin": ["ko"],
-    "config": {
-        "bin-dir": "bin"
-    },
     "autoload": {
         "psr-0": {
             "Ko": "src"
