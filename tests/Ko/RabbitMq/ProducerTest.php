@@ -133,6 +133,17 @@ class ProducerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($flag, $p->getFlagsFromOptions());
     }
 
+    public function testParamsOnPublishMessage()
+    {
+        $this->exchangeMock->expects($this->once())
+            ->method('publish')
+            ->with($this->equalTo('message'), $this->equalTo('routeKey'), $this->equalTo('flag'), $this->equalTo(['param1' => 'value1']));
+
+        $p = new Producer($this->channelMock, $this->exchangeMock);
+        $p->setExchangeOptions(['name' => 'myExchange', 'type' => 'someType']);
+        $p->publish('message', 'routeKey', 'flag', ['param1' => 'value1']);
+    }
+
     public function exchangeFlagProvider()
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . "/Fixtures/exchangeFlagProvider.yml"));

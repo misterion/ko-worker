@@ -104,12 +104,20 @@ class Application
         $config = Yaml::parse(file_get_contents($this->opts['config']));
         $queue = $this->opts['q'];
 
+        if (empty($queue)) {
+            throw new \DomainException('You must declare queue name');
+        }
+
+        if (!isset($config['consumers'][$queue]['class'])) {
+            throw new \DomainException('You must declare a class for the job');
+        }
+
         return Closure::bind(
             function (Process $process) use ($config, $queue) {
                 $child = new Child();
                 $child->setConfig($config);
                 $child->setName($queue);
-                $child->setExecutorClass('\Ko\Worker\Sample');
+                $child->setExecutorClass($config['consumers'][$queue]['class']);
                 $child->run($process);
             },
             null

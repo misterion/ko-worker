@@ -30,10 +30,11 @@ class Child
 
     /**
      * @param mixed $executorClass
+     * @throws \InvalidArgumentException
      */
     public function setExecutorClass($executorClass)
     {
-        if (!is_subclass_of($executorClass, 'Ko\Worker\ActionInterface')) {
+        if (!is_subclass_of($executorClass, '\Ko\Worker\ActionInterface')) {
             throw new \InvalidArgumentException('Executor class ' . $executorClass . ' should implements Ko\Worker\ActionInterface');
         }
 
@@ -60,6 +61,7 @@ class Child
                 $queue->ack($envelope->getDeliveryTag());
             } catch (\Exception $e) {
                 $queue->nack($envelope->getDeliveryTag());
+                throw $e;
             }
 
             $process->setProcessTitle('ko-worker: child wait new envelope');
