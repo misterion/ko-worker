@@ -1,5 +1,10 @@
 # ko-worker #
 [![Build Status](https://travis-ci.org/misterion/ko-worker.svg)](https://travis-ci.org/misterion/ko-worker)
+[![Latest Stable Version](https://poser.pugx.org/misterion/ko-worker/v/stable.png)](https://packagist.org/packages/misterion/ko-worker)
+[![Code Coverage](https://scrutinizer-ci.com/g/misterion/ko-worker/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/misterion/ko-worker/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/misterion/ko-worker/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/misterion/ko-worker/?branch=master)
+[![Latest Unstable Version](https://poser.pugx.org/misterion/ko-worker/v/unstable.png)](https://packagist.org/packages/misterion/ko-worker)
+[![License](https://poser.pugx.org/misterion/ko-worker/license.png)](https://packagist.org/packages/misterion/ko-worker)
 
 ## About ##
 Ko-worker project is a PHP library that aims to abstract queue and RPC messaging patterns that can be implemented over RabbitMQ.
