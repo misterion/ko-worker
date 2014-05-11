@@ -2,7 +2,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2010 Nikolay Bondarenko
+ * Copyright (c) 2014 Nikolay Bondarenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,13 +40,18 @@ use AMQPChannel;
 /**
  * Class AmqpBroker
  *
+ * @category GGS
  * @package Ko
- * @author Nikolay Bondarenko <misterionkell@gmail.com>
+ * @copyright 2014 Nikolay Bondarenko. All rights reserved.
+ * @author Nikolay Bondarenko <nikolay.bondarenko@syncopate.ru>
  * @author Vadim Sabirov <pr0head@gmail.com>
  * @version 1.0.0
  */
 class AmqpBroker
 {
+    /**
+     * @var array
+     */
     protected $config;
 
     /**
@@ -102,10 +107,10 @@ class AmqpBroker
         $conf = $this->config['producers'][$name];
         $conn = $this->connFactory->getConnection($conf['connection']);
 
-        $p = new Producer(new AMQPChannel($conn));
-        $p->setExchangeOptions($conf['exchange_options']);
+        $producer = new Producer(new AMQPChannel($conn));
+        $producer->setExchangeOptions($conf['exchange_options']);
 
-        return $p;
+        return $producer;
     }
 
     /**
@@ -132,11 +137,11 @@ class AmqpBroker
         $conf = $this->config['consumers'][$name];
         $conn = $this->connFactory->getConnection($conf['connection']);
 
-        $c = new Consumer(new AMQPChannel($conn));
-        $c->setQueueOptions($conf['queue_options']);
+        $consumer = new Consumer(new AMQPChannel($conn));
+        $consumer->setQueueOptions($conf['queue_options']);
 
-        $this->consumers[$name] = $c;
+        $this->consumers[$name] = $consumer;
 
-        return $c;
+        return $consumer;
     }
 }

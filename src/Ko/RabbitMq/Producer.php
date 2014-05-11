@@ -2,7 +2,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2010 Nikolay Bondarenko
+ * Copyright (c) 2014 Nikolay Bondarenko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,9 +37,10 @@ use AMQPExchange;
 /**
  * Class Producer
  *
- * @package Ko
- * @author Nikolay Bondarenko <misterionkell@gmail.com>
- * @version 1.0.0
+ * @package Ko\RabbitMq
+ * @copyright 2014 Nikolay Bondarenko. All rights reserved.
+ * @author Nikolay Bondarenko <nikolay.bondarenko@syncopate.ru>
+ * @version 1.0
  */
 class Producer
 {
