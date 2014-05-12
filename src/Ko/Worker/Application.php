@@ -152,11 +152,16 @@ class Application
 
         return Closure::bind(
             function (Process $process) use ($config, $queue) {
-                $child = new Child();
-                $child->setConfig($config);
-                $child->setName($queue);
-                $child->setExecutorClass($config['consumers'][$queue]['class']);
-                $child->run($process);
+                try {
+                    $child = new Child();
+                    $child->setConfig($config);
+                    $child->setName($queue);
+                    $child->setExecutorClass($config['consumers'][$queue]['class']);
+                    $child->run($process);
+                } catch (\Exception $e) {
+                    syslog(LOG_CRIT, $e->getTraceAsString());
+                    throw new $e;
+                }
             },
             null
         );
