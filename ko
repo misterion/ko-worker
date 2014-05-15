@@ -30,19 +30,30 @@
  * @copyright 2014 Nikolay Bondarenko. All rights reserved.
  * @license MIT http://opensource.org/licenses/MIT
  */
-if (file_exists(__DIR__ . '/../../../../autoload.php')) {
-    require_once __DIR__ . '/../../../../autoload.php';
-} else {
-    set_include_path(
-        get_include_path()
-        . PATH_SEPARATOR . __DIR__ . '/../'
-        . PATH_SEPARATOR . __DIR__ . '/../../'
-        . PATH_SEPARATOR . __DIR__ . '/../../../'
-    );
 
-    require_once 'autoload.php';
+$files = [
+    __DIR__ . '/../../../../autoload.php',
+    __DIR__ . '/../../../autoload.php',
+    __DIR__ . '/../../autoload.php',
+    __DIR__ . '/../autoload.php',
+    __DIR__ . '/vendor/autoload.php'
+];
+
+foreach ($files as $file) {
+    if (file_exists($file)) {
+        break;
+    }
 }
 
+if (empty($file)) {
+    die(
+        'You need to set up the project dependencies using the following commands:' . PHP_EOL .
+        'wget http://getcomposer.org/composer.phar' . PHP_EOL .
+        'php composer.phar install' . PHP_EOL
+    );
+}
+
+require $file;
 
 $app = new Ko\Worker\Application();
 $app->setProcessManager(new Ko\ProcessManager());
