@@ -62,6 +62,8 @@ Just clone the repository and take care about autoload for namespace `Ko`.
 
 ## Examples ##
 
+Look at `examples` folder
+
 UNDONE
 
 ## Usage ##
@@ -191,7 +193,7 @@ In this way we can expand the actions we perform every time a friend added  with
 Now, how to run a consumer? There's a command for it that can be executed like this:
 
 ```bash
-$ ./bin/ko -q social_activity -w 10
+$ ./bin/ko --c ../config_queue.yaml --q social_activity --w 10
 ```
 
 What does this mean?

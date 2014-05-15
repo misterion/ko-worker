@@ -36,5 +36,10 @@
         "psr-0": {
             "Ko": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ko\\Examples\\": "examples/"
+        }
     }
 }
