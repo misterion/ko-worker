@@ -48,7 +48,7 @@ use Ulrichsg\Getopt\Option;
  */
 class Application
 {
-    const VERSION = '1.0.0';
+    const VERSION = '1.1.0';
 
     /**
      * @var Getopt
@@ -84,8 +84,15 @@ class Application
             }
         }
 
+        $this->setProcessTitle('idle');
         $this->processManager->wait();
+
         exit(0);
+    }
+
+    protected function setProcessTitle($title)
+    {
+        $this->processManager->setProcessTitle('ko-worker[m|' . $this->opts['q'] . ']: ' . $title);
     }
 
     protected function buildCommandLineOptions()
@@ -103,7 +110,7 @@ class Application
                 (new Option('d', 'demonize', Getopt::NO_ARGUMENT))
                     ->setDescription('Run application as daemon'),
                 (new Option('f', 'fork', Getopt::NO_ARGUMENT))
-                    ->setDescription('Use fork instead of spawn child process')
+                    ->setDescription('Use fork instead of spawn child process'),
             ]
         );
     }
@@ -112,7 +119,7 @@ class Application
     {
         try {
             $this->opts->parse();
-            if ($this->opts->count() === 0) {
+            if ($this->opts->count() === 0 || !file_exists($this->opts['config'])) {
                 $this->printAbout();
                 exit(0);
             }
@@ -131,7 +138,7 @@ class Application
 
     protected function prepareMasterProcess()
     {
-        $this->processManager->setProcessTitle('ko-worker: master process');
+        $this->setProcessTitle('running');
         if (isset($this->opts['d'])) {
             $this->processManager->demonize();
         }

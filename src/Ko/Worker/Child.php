@@ -31,8 +31,8 @@
  */
 namespace Ko\Worker;
 
-use Ko\Process;
 use Ko\AmqpBroker;
+use Ko\Process;
 
 /**
  * Class Child
@@ -69,12 +69,15 @@ class Child
 
     /**
      * @param mixed $executorClass
+     *
      * @throws \InvalidArgumentException
      */
     public function setExecutorClass($executorClass)
     {
         if (!is_subclass_of($executorClass, '\Ko\Worker\ActionInterface')) {
-            throw new \InvalidArgumentException('Executor class ' . $executorClass . ' should implements Ko\Worker\ActionInterface');
+            throw new \InvalidArgumentException(
+                'Executor class ' . $executorClass . ' should implements Ko\Worker\ActionInterface'
+            );
         }
 
         $this->executorClass = $executorClass;
@@ -82,35 +85,48 @@ class Child
 
     public function run(Process $process)
     {
-        $process->setProcessTitle('ko-worker: child process');
+        $totalProcessed = 0;
+        $this->setProcessTitle($process, 'waiting first envelope');
 
         $broker = new AmqpBroker($this->config);
-        $broker->getConsumer($this->name)->consume(function(\AMQPEnvelope $envelope, \AMQPQueue $queue) use ($process) {
-            pcntl_signal_dispatch();
+        $broker->getConsumer($this->name)->consume(
+            function (\AMQPEnvelope $envelope, \AMQPQueue $queue) use ($process, &$totalProcessed) {
+                $process->dispatchSignals();
 
-            $process->setProcessTitle('ko-worker: child wait executing envelope');
+                $this->setProcessTitle($process, 'processing `' . $envelope->getRoutingKey() . '`');
 
-            /**
-             * @var $executor ActionInterface
-             */
-            try {
-                $executor = new $this->executorClass();
-                $executor->execute($envelope, $queue);
+                try {
+                    /** @var $executor ActionInterface */
+                    $executor = new $this->executorClass();
+                    $executor->execute($envelope, $queue);
 
-                $queue->ack($envelope->getDeliveryTag());
-            } catch (\Exception $e) {
-                $queue->nack($envelope->getDeliveryTag());
-                throw $e;
+                    $queue->ack($envelope->getDeliveryTag());
+                } catch (\Exception $e) {
+                    $queue->nack($envelope->getDeliveryTag());
+                    throw $e;
+                }
+
+                if ($process->isShouldShutdown()) {
+                    $this->setProcessTitle($process, 'canceling');
+                    $queue->cancel();
+
+                    return false;
+                }
+
+                $this->setProcessTitle($process, 'waiting next envelope (processed ' . ++$totalProcessed . ')') ;
+                return true;
             }
+        );
+    }
 
-            $process->setProcessTitle('ko-worker: child wait new envelope');
-
-            if ($process->isShouldShutdown()) {
-                $queue->cancel();
-                return false;
-            }
-
-            return true;
-        });
+    /**
+     * @param Process $process
+     * @param string $title
+     *
+     * @return string
+     */
+    protected function setProcessTitle(Process $process, $title)
+    {
+        $process->setProcessTitle('ko-worker[c|' . $this->name . ']: ' . $title);
     }
 } 
