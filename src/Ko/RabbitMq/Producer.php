@@ -79,6 +79,23 @@ class Producer
         $this->channel = $channel;
     }
 
+    /**
+     * Publish a message to an exchange.
+     *
+     * Publish a message to the exchange represented by the AMQPExchange object.
+     *
+     * @param string $message The message to publish.
+     * @param string $routingKey The optional routing key to which to publish to.
+     * @param integer $flags One or more of AMQP_MANDATORY and AMQP_IMMEDIATE.
+     * @param array $attributes One of content_type, content_encoding,
+     *                          message_id, user_id, app_id, delivery_mode,
+     *                          priority, timestamp, expiration, type
+     *                          or reply_to, headers.
+     *
+     * @throws \AMQPExchangeException   On failure.
+     * @throws \AMQPChannelException    If the channel is not open.
+     * @throws \AMQPConnectionException If the connection to the broker was lost.
+     */
     public function publish($message, $routingKey = null, $flags = AMQP_NOPARAM, array $attributes = [])
     {
         if (!$this->exchangeDeclared) {

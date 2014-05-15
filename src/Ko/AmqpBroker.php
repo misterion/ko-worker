@@ -76,14 +76,18 @@ class AmqpBroker
     }
 
     /**
+     * Set broker configuration.
+     *
      * @param mixed $config
      */
-    public function setConfig($config)
+    public function setConfig(array $config)
     {
         $this->config = $config;
     }
 
     /**
+     * Retrieve Producer instance by name.
+     *
      * @param string $name
      *
      * @return Producer
@@ -114,6 +118,8 @@ class AmqpBroker
     }
 
     /**
+     * Retrieve Consumer instance by name.
+     *
      * @param string $name
      *
      * @return Consumer
