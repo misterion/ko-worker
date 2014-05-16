@@ -50,6 +50,10 @@ class Application
 {
     const VERSION = '1.1.0';
 
+    const SUCCESS_EXIT = 1;
+
+    const FAILED_EXIT = 0;
+
     /**
      * @var Getopt
      */
@@ -60,39 +64,9 @@ class Application
      */
     protected $processManager;
 
-    /**
-     * @param ProcessManager $processManager
-     */
-    public function setProcessManager($processManager)
-    {
-        $this->processManager = $processManager;
-    }
-
-    public function run()
+    public function __construct()
     {
         $this->buildCommandLineOptions();
-        $this->parseCommandLine();
-        $this->prepareMasterProcess();
-
-        for ($i = 0; $i < (int)$this->opts['w']; $i++) {
-            $closure = $this->getChildCallable();
-
-            if (isset($this->opts['f'])) {
-                $this->processManager->fork($closure);
-            } else {
-                $this->processManager->spawn($closure);
-            }
-        }
-
-        $this->setProcessTitle('idle');
-        $this->processManager->wait();
-
-        exit(0);
-    }
-
-    protected function setProcessTitle($title)
-    {
-        $this->processManager->setProcessTitle('ko-worker[m|' . $this->opts['q'] . ']: ' . $title);
     }
 
     protected function buildCommandLineOptions()
@@ -115,18 +89,56 @@ class Application
         );
     }
 
+    /**
+     * @param ProcessManager $processManager
+     *
+     * @return $this
+     */
+    public function setProcessManager(ProcessManager $processManager)
+    {
+        $this->processManager = $processManager;
+
+        return $this;
+    }
+
+    public function run()
+    {
+        $this->setProcessTitle('running');
+
+        $this->parseCommandLine();
+        $this->demonize();
+
+        $this->runChilds();
+
+        $this->setProcessTitle('idle');
+        $this->processManager->wait();
+
+        $this->exitApp(self::SUCCESS_EXIT);
+    }
+
+    protected function setProcessTitle($title)
+    {
+        $this->processManager->setProcessTitle('ko-worker[m|' . $this->getQueue() . ']: ' . $title);
+    }
+
+    protected function getQueue()
+    {
+        return $this->opts['q'];
+    }
+
     protected function parseCommandLine()
     {
         try {
             $this->opts->parse();
-            if ($this->opts->count() === 0 || !file_exists($this->opts['config'])) {
-                $this->printAbout();
-                exit(0);
-            }
         } catch (\UnexpectedValueException $e) {
             echo "Error: " . $e->getMessage() . PHP_EOL;
             $this->printAbout();
-            exit(1);
+            $this->exitApp(self::FAILED_EXIT);
+        }
+
+        if (!$this->isValidCommandLine()) {
+            $this->printAbout();
+            $this->exitApp(self::FAILED_EXIT);
         }
     }
 
@@ -136,12 +148,46 @@ class Application
         echo $this->opts->getHelpText();
     }
 
-    protected function prepareMasterProcess()
+    protected function exitApp($code)
     {
-        $this->setProcessTitle('running');
-        if (isset($this->opts['d'])) {
+        exit($code);
+    }
+
+    protected function isValidCommandLine()
+    {
+        return $this->opts->count() !== 0
+        && file_exists($this->opts['config']);
+    }
+
+    protected function demonize()
+    {
+        if ($this->shouldDemonize()) {
             $this->processManager->demonize();
         }
+    }
+
+    protected function shouldDemonize()
+    {
+        return isset($this->opts['d']);
+    }
+
+    protected function runChilds()
+    {
+        $count = $this->getWorkerCount();
+        for ($i = 0; $i < $count; $i++) {
+            $closure = $this->getChildCallable();
+
+            if ($this->isForkMode()) {
+                $this->processManager->fork($closure);
+            } else {
+                $this->processManager->spawn($closure);
+            }
+        }
+    }
+
+    public function getWorkerCount()
+    {
+        return (int)$this->opts['w'];
     }
 
     protected function getChildCallable()
@@ -167,5 +213,10 @@ class Application
             },
             null
         );
+    }
+
+    public function isForkMode()
+    {
+        return isset($this->opts['f']);
     }
 }
