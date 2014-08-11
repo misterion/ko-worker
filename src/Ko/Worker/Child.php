@@ -102,7 +102,7 @@ class Child
 
                     $queue->ack($envelope->getDeliveryTag());
                 } catch (\Exception $e) {
-                    $queue->nack($envelope->getDeliveryTag());
+                    $queue->nack($envelope->getDeliveryTag(), \AMQP_REQUEUE);
                     throw $e;
                 }
 
