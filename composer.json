@@ -24,7 +24,7 @@
     "require": {
         "php": ">=5.4.0",
         "misterion/ko-process": ">=0.3.0",
-        "symfony/yaml": "2.4.x-dev",
+        "symfony/yaml": "2.4.*",
         "ulrichsg/getopt-php": "2.1.0"
     },
     "require-dev": {
