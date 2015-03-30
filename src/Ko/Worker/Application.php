@@ -77,7 +77,6 @@ class Application
                     ->setDefaultValue(1)
                     ->setDescription('Worker process count'),
                 (new Option('c', 'config', Getopt::REQUIRED_ARGUMENT))
-                    ->setDefaultValue('config.yaml')
                     ->setDescription('Worker configuration file'),
                 (new Option('q', 'queue', Getopt::REQUIRED_ARGUMENT))
                     ->setDescription('Consumer queue name'),
