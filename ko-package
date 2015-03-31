@@ -79,7 +79,6 @@ $cmdArguments = [
         ->setDefaultValue(false)
         ->setDescription('Use composer.json file for name and version'),
     (new Option('e', 'exclude', Getopt::OPTIONAL_ARGUMENT))
-        ->setDefaultValue('')
         ->setDescription('Excluded folders like logs, test, etc.'),
 ];
 
@@ -96,7 +95,7 @@ if (empty($opts['path'])) {
 }
 
 $files = [];
-$exclude = explode(',', $opts['exclude']);
+$exclude = !empty($opts['exclude']) ? explode(',', $opts['exclude']) : [];
 
 /** @var SplFileInfo[] $rd */
 $rd = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($opts['path']));
