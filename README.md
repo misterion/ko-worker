@@ -206,6 +206,22 @@ By default the consumer will process messages in an __endless loop__ for some de
 
 UNDONE
 
+## Production ##
+Ko-worker came with nice `ko-package` utility which allow you to create executable phar from your worker project.
+
+```bash
+$ ./bin/ko-package
+
+ko-package version 0.0.1
+Usage: ko-package [options] [operands]
+Options:
+  -p, --path <arg>        Path to application code
+  -o, --output [<arg>]    Output file name
+  -v, --version [<arg>]   Application version
+  -n, --name [<arg>]      Application name
+  -e, --exclude [<arg>]   Excluded folders like logs, test, etc.
+```
+
 ## Credits ##
 
 Ko-worker written as a part of [GameNet project](http://gamenet.ru) by Nikolay Bondarenko (misterionkell at gmail.com)

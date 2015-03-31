@@ -75,13 +75,15 @@ $cmdArguments = [
     (new Option('n', 'name', Getopt::OPTIONAL_ARGUMENT))
         ->setDefaultValue('MyApp')
         ->setDescription('Application name'),
+    (new Option('c', 'composer', Getopt::OPTIONAL_ARGUMENT))
+        ->setDefaultValue(false)
+        ->setDescription('Use composer.json file for name and version'),
     (new Option('e', 'exclude', Getopt::OPTIONAL_ARGUMENT))
         ->setDefaultValue('')
         ->setDescription('Excluded folders like logs, test, etc.'),
 ];
 
 $opts = new Getopt($cmdArguments);
-$opts->setBanner(sprintf("ko-package version %s)", KO_PACKAGE_VERSION) . PHP_EOL);
 
 try {
     $opts->parse();
@@ -112,14 +114,29 @@ foreach ($rd as $file) {
     $files[substr($path, 2)] = $path;
 }
 
-$stub = <<<FILE
-    require_once './vendor/autoload.php';
 
-    \$app = new \Ko\Worker\Application();
-    \$app->setProcessManager(new \Ko\ProcessManager())
-        ->setVersion('{$opts['version']}')
-        ->setName('{$opts['name']}')
-        ->run()
+if ($opts['composer'] == true) {
+    $composerFile = $opts['path'] . 'composer.json';
+    if (file_exists($composerFile)) {
+        $data = json_decode(file_get_contents($composerFile), true);
+
+        $name = $data['name'];
+        $version = !empty($data['version']) ? $data['version'] : $opts['version'];
+    }
+} else {
+    $name = trim($opts['name']);
+    $version = trim($opts['version']);
+}
+
+$stub = <<<FILE
+<?php
+require_once './vendor/autoload.php';
+
+\$app = new \Ko\Worker\Application();
+\$app->setProcessManager(new \Ko\ProcessManager())
+    ->setVersion('$version')
+    ->setName('$name')
+    ->run();
 FILE;
 
 $phar = new Phar($opts['output'], 0, $opts['output']);
@@ -136,6 +153,7 @@ echo sprintf('%s signature %s (%s)', $opts['output'], $sig['hash'], $sig['hash_t
  * @param Getopt $opts
  */
 function showAbout($opts) {
+    echo sprintf("ko-package version %s", KO_PACKAGE_VERSION) . PHP_EOL;
     echo $opts->getHelpText();
     exit;
 }
