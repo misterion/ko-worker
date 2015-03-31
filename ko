@@ -53,7 +53,8 @@ if (empty($file)) {
     );
 }
 
-require $file;
+/** @noinspection PhpIncludeInspection */
+require_once $file;
 
 $app = new Ko\Worker\Application();
 $app->setProcessManager(new Ko\ProcessManager());
