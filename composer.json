@@ -31,7 +31,7 @@
         "phpunit/phpunit": ">=4.0.0",
         "empi89/php-amqp-stubs": "dev-master"
     },
-    "bin": ["ko"],
+    "bin": ["ko", "ko-package"],
     "autoload": {
         "psr-0": {
             "Ko": "src"
