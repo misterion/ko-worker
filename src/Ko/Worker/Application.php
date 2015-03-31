@@ -199,7 +199,7 @@ class Application
 
     protected function printAbout()
     {
-        echo sprintf("%s version %s (ko-worker version %s)", $this->name, $this->version, self::VERSION) . PHP_EOL;
+        echo sprintf("%s version %s (ko-worker version %s)", $this->name, $this->version, self::VERSION);
         echo PHP_EOL;
         echo $this->opts->getHelpText();
     }

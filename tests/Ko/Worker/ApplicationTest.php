@@ -196,7 +196,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 
         $expectedAbout = <<< ABOUT
 MyApp version 1.0.0 (ko-worker version 1.2.0)
-
 Usage:  [options] [operands]
 Options:
   -w, --workers <arg>     Worker process count
