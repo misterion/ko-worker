@@ -163,5 +163,58 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
         $appMock->setProcessManager($pmMock)
             ->run();
     }
+
+    public function testGetSetName()
+    {
+        $this->app->setName('Name');
+        $this->assertEquals('Name', $this->app->getName());
+    }
+
+    public function testGetSetVersion()
+    {
+        $this->app->setVersion('1.0.0');
+        $this->assertEquals('1.0.0', $this->app->getVersion());
+    }
+
+    /**
+     * @outputBuffering disabled
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Exit
+     * @expectedExceptionCode 0
+     */
+    public function testAboutWithNameAndVersion()
+    {
+        global $argv;
+        $argv = [];
+
+        $appMock = $this->getMock('Ko\Worker\Application', ['exitApp']);
+
+        $appMock->expects($this->once())
+            ->method('exitApp')
+            ->with($this->equalTo(Application::FAILED_EXIT))
+            ->will($this->throwException(new \RuntimeException('Exit', Application::FAILED_EXIT)));
+
+        $expectedAbout = <<< ABOUT
+MyApp version 1.0.0 (ko-worker version 1.2.0)
+
+Usage:  [options] [operands]
+Options:
+  -w, --workers <arg>     Worker process count
+  -c, --config <arg>      Worker configuration file
+  -q, --queue <arg>       Consumer queue name
+  -d, --demonize          Run application as daemon
+  -f, --fork              Use fork instead of spawn child process
+
+ABOUT;
+        $this->expectOutputString($expectedAbout);
+
+        /** @var \Ko\ProcessManager $pmMock */
+        $pmMock = $this->getProcessManagerMock();
+
+        /** @var Application $appMock */
+        $appMock->setName('MyApp')
+            ->setVersion('1.0.0')
+            ->setProcessManager($pmMock)
+            ->run();
+    }
 }
- 

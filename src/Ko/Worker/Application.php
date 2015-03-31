@@ -48,7 +48,7 @@ use Ulrichsg\Getopt\Option;
  */
 class Application
 {
-    const VERSION = '1.1.0';
+    const VERSION = '1.2.0';
 
     const SUCCESS_EXIT = 1;
 
@@ -64,9 +64,64 @@ class Application
      */
     protected $processManager;
 
+    /**
+     * @var string
+     */
+    protected $version;
+
+    /**
+     * @var string
+     */
+    protected $name;
+
     public function __construct()
     {
+        $this->app = 'App';
+        $this->version = '0.0.1';
+
         $this->buildCommandLineOptions();
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * Set custom application version
+     *
+     * @param string $version
+     *
+     * @return $this
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+      Set custom application name
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
     }
 
     protected function buildCommandLineOptions()
@@ -105,6 +160,7 @@ class Application
         $this->setProcessTitle('running');
 
         $this->parseCommandLine();
+
         $this->demonize();
 
         $this->runChilds();
@@ -130,7 +186,7 @@ class Application
         try {
             $this->opts->parse();
         } catch (\UnexpectedValueException $e) {
-            echo "Error: " . $e->getMessage() . PHP_EOL;
+            echo "Error: " . $e->getMessage() . PHP_EOL . PHP_EOL;
             $this->printAbout();
             $this->exitApp(self::FAILED_EXIT);
         }
@@ -143,7 +199,8 @@ class Application
 
     protected function printAbout()
     {
-        echo 'Ko-worker version ' . self::VERSION . PHP_EOL;
+        echo sprintf("%s version %s (ko-worker version %s)", $this->name, $this->version, self::VERSION) . PHP_EOL;
+        echo PHP_EOL;
         echo $this->opts->getHelpText();
     }
 
