@@ -126,12 +126,13 @@ if ($opts['composer'] == true && file_exists($composerFile)) {
 }
 
 $targetFile = new SplFileInfo($opts['output']);
+$alias = $targetFile->getFilename();
 
-$phar = new Phar($targetFile->getPathname(), 0, $targetFile->getFilename());
+$phar = new Phar($targetFile->getPathname(), 0, $alias);
 $phar->startBuffering();
 $phar->setSignatureAlgorithm(Phar::SHA1);
 $phar->buildFromIterator(new ArrayIterator($files));
-$phar->setStub(getStub($name, $version));
+$phar->setStub(getStub($name, $version, $alias));
 $phar->compressFiles(Phar::GZ);
 $phar->stopBuffering();
 
@@ -147,7 +148,7 @@ function showAbout($opts) {
     exit;
 }
 
-function getStub($name, $version) {
+function getStub($name, $version, $alias) {
     $stub = <<<EOF
 #!/usr/bin/env php
 <?php
@@ -163,7 +164,9 @@ if (extension_loaded('apc') && ini_get('apc.enable_cli') && ini_get('apc.cache_b
     }
 }
 
-require_once './vendor/autoload.php';
+Phar::mapPhar('$alias');
+
+require_once 'phar://$alias/vendor/autoload.php';
 
 \$app = new \Ko\Worker\Application();
 \$app->setProcessManager(new \Ko\ProcessManager())
