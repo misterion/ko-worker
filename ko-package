@@ -114,36 +114,26 @@ foreach ($rd as $file) {
 }
 
 
-if ($opts['composer'] == true) {
-    $composerFile = $opts['path'] . 'composer.json';
-    if (file_exists($composerFile)) {
-        $data = json_decode(file_get_contents($composerFile), true);
+$composerFile = $opts['path'] . 'composer.json';
+if ($opts['composer'] == true && file_exists($composerFile)) {
+    $data = json_decode(file_get_contents($composerFile), true);
 
-        $name = $data['name'];
-        $version = !empty($data['version']) ? $data['version'] : $opts['version'];
-    }
+    $name = $data['name'];
+    $version = !empty($data['version']) ? $data['version'] : $opts['version'];
 } else {
     $name = trim($opts['name']);
     $version = trim($opts['version']);
 }
 
-$stub = <<<FILE
-<?php
-require_once './vendor/autoload.php';
+$targetFile = new SplFileInfo($opts['output']);
 
-\$app = new \Ko\Worker\Application();
-\$app->setProcessManager(new \Ko\ProcessManager())
-    ->setVersion('$version')
-    ->setName('$name')
-    ->run();
-FILE;
-
-$phar = new Phar($opts['output'], 0, $opts['output']);
-$phar->buildFromIterator(new ArrayIterator($files));
-$phar->addFromString('ko', $stub);
-$phar->setStub($phar->createDefaultStub('ko'));
+$phar = new Phar($targetFile->getPathname(), 0, $targetFile->getFilename());
+$phar->startBuffering();
 $phar->setSignatureAlgorithm(Phar::SHA1);
+$phar->buildFromIterator(new ArrayIterator($files));
+$phar->setStub(getStub($name, $version));
 $phar->compressFiles(Phar::GZ);
+$phar->stopBuffering();
 
 $sig = $phar->getSignature();
 echo sprintf('%s signature %s (%s)', $opts['output'], $sig['hash'], $sig['hash_type']) . PHP_EOL;
@@ -155,4 +145,34 @@ function showAbout($opts) {
     echo sprintf("ko-package version %s", KO_PACKAGE_VERSION) . PHP_EOL;
     echo $opts->getHelpText();
     exit;
+}
+
+function getStub($name, $version) {
+    $stub = <<<EOF
+#!/usr/bin/env php
+<?php
+/**
+ * APC protection code from https://github.com/acoulton/composer/commit/9ca99762f9e41dec12be28b346f6fb71f72d85a5
+ */
+if (extension_loaded('apc') && ini_get('apc.enable_cli') && ini_get('apc.cache_by_default')) {
+    if (version_compare(phpversion('apc'), '3.0.12', '>=')) {
+        ini_set('apc.cache_by_default', 0);
+    } else {
+        fwrite(STDERR, 'Warning: APC <= 3.0.12 may cause fatal errors when running application.'.PHP_EOL);
+        fwrite(STDERR, 'Update APC, or set apc.enable_cli or apc.cache_by_default to 0 in your php.ini.'.PHP_EOL);
+    }
+}
+
+require_once './vendor/autoload.php';
+
+\$app = new \Ko\Worker\Application();
+\$app->setProcessManager(new \Ko\ProcessManager())
+    ->setVersion('$version')
+    ->setName('$name')
+    ->run();
+
+__HALT_COMPILER();
+EOF;
+
+    return $stub;
 }
