@@ -43,7 +43,7 @@ use Ulrichsg\Getopt\Option;
  *
  * @package Ko\Worker
  * @copyright 2014 Nikolay Bondarenko. All rights reserved.
- * @author Nikolay Bondarenko <nikolay.bondarenko@syncopate.ru>
+ * @author Nikolay Bondarenko <misterionkell@gmail.com>
  * @version 1.0
  */
 class Application

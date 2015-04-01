@@ -40,10 +40,9 @@ use AMQPChannel;
 /**
  * Class AmqpBroker
  *
- * @category GGS
  * @package Ko
  * @copyright 2014 Nikolay Bondarenko. All rights reserved.
- * @author Nikolay Bondarenko <nikolay.bondarenko@syncopate.ru>
+ * @author Nikolay Bondarenko <misterionkell@gmail.com>
  * @author Vadim Sabirov <pr0head@gmail.com>
  * @version 1.0.0
  */

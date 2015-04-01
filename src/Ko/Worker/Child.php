@@ -37,10 +37,9 @@ use Ko\Process;
 /**
  * Class Child
  *
- * @category GGS
  * @package Ko\Worker
- * @copyright 2014 Nikolay Bondarenko. All rights reserved.
- * @author Nikolay Bondarenko <nikolay.bondarenko@syncopate.ru>
+ * @copyright 2015 Nikolay Bondarenko. All rights reserved.
+ * @author Nikolay Bondarenko <misterionkell@gmail.com>
  * @version 1.0
  */
 class Child
