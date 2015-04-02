@@ -133,7 +133,9 @@ $phar->startBuffering();
 $phar->setSignatureAlgorithm(Phar::SHA1);
 $phar->buildFromIterator(new ArrayIterator($files));
 $phar->setStub(getStub($name, $version, $alias));
-$phar->compressFiles(Phar::GZ);
+
+//INFO Comment due behavior http://stackoverflow.com/questions/29413013/phar-internal-corruption-crc32-mismatch-during-process-fork
+//$phar->compressFiles(Phar::GZ);
 $phar->stopBuffering();
 
 $sig = $phar->getSignature();
