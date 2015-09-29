@@ -2,7 +2,7 @@
     "name": "misterion/ko-worker",
     "type": "library",
     "description": "Ko-worker project is a base to develop amqp based message dispatchers",
-    "keywords": ["pcntl", "fork", "background", "posix", "cli", "utility", "rpc", "ampq", "queue", "parallel"],
+    "keywords": ["pcntl", "fork", "background", "posix", "cli", "utility", "rpc", "amqp", "queue", "parallel"],
     "homepage": "https://github.com/misterion/ko-worker",
     "license": "MIT",
     "authors": [
@@ -23,18 +23,23 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "misterion/ko-process": ">=0.2.0",
-        "symfony/yaml": "2.4.x-dev",
-        "ulrichsg/getopt-php": "2.1.0"
+        "misterion/ko-process": "~0.4",
+        "symfony/yaml": "2.4.*",
+        "ulrichsg/getopt-php": "~2.3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": ">=4.0.0",
+        "phpunit/phpunit": "~4.0.0",
         "empi89/php-amqp-stubs": "dev-master"
     },
-    "bin": ["ko"],
+    "bin": ["ko", "ko-package"],
     "autoload": {
         "psr-0": {
             "Ko": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ko\\Examples\\": "examples/"
         }
     }
 }

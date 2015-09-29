@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /**
  * The MIT License
@@ -30,32 +29,22 @@
  * @copyright 2014 Nikolay Bondarenko. All rights reserved.
  * @license MIT http://opensource.org/licenses/MIT
  */
+namespace Ko\Examples\ReceiverClass\Actions;
 
-$files = [
-    __DIR__ . '/../../../../autoload.php',
-    __DIR__ . '/../../../autoload.php',
-    __DIR__ . '/../../autoload.php',
-    __DIR__ . '/../autoload.php',
-    __DIR__ . '/vendor/autoload.php'
-];
+use Ko\Worker\ActionInterface;
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        break;
+/**
+ * Class HelloWorld
+ *
+ * @package Ko\ReceiverClass\Actions
+ * @copyright 2014 Nikolay Bondarenko. All rights reserved.
+ * @author Nikolay Bondarenko <nikolay.bondarenko@syncopate.ru>
+ * @version 1.0
+ */
+class HelloWorld implements ActionInterface
+{
+    public function execute(\AMQPEnvelope $envelope, \AMQPQueue $queue)
+    {
+        echo 'Receive `' . $envelope->getBody() . '` from queue `' . $queue->getName() . '`' . PHP_EOL;
     }
-}
-
-if (empty($file)) {
-    die(
-        'You need to set up the project dependencies using the following commands:' . PHP_EOL .
-        'wget http://getcomposer.org/composer.phar' . PHP_EOL .
-        'php composer.phar install' . PHP_EOL
-    );
-}
-
-/** @noinspection PhpIncludeInspection */
-require_once $file;
-
-$app = new Ko\Worker\Application();
-$app->setProcessManager(new Ko\ProcessManager());
-$app->run();
+} 

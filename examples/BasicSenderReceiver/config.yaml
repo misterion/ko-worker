@@ -1,0 +1,18 @@
+connections:
+  default:
+    host: 'localhost'
+    port: 5672
+    login: 'user'
+    password: 'password'
+producers:
+  user:
+    connection: default
+    exchange_options: {name: 'user_exchange', type: direct, durable: 0, passive: 0}
+consumers:
+  user:
+    connection: default
+    queue_options:
+      name: 'user_queue'
+      durable: 0
+      autodelete: 0
+      binding: {name: 'user_exchange', routing-keys: '*'}

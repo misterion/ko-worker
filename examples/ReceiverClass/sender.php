@@ -30,32 +30,18 @@
  * @copyright 2014 Nikolay Bondarenko. All rights reserved.
  * @license MIT http://opensource.org/licenses/MIT
  */
+require_once '../../vendor/autoload.php';
 
-$files = [
-    __DIR__ . '/../../../../autoload.php',
-    __DIR__ . '/../../../autoload.php',
-    __DIR__ . '/../../autoload.php',
-    __DIR__ . '/../autoload.php',
-    __DIR__ . '/vendor/autoload.php'
-];
+echo 'Press ctrl + c to stop execution' . PHP_EOL;
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        break;
-    }
+$config = \Symfony\Component\Yaml\Yaml::parse(file_get_contents('config.yaml'));
+
+$broker = new Ko\AmqpBroker($config);
+$producer = $broker->getProducer('user');
+
+while (true) {
+    $message = 'Hello world ' . time();
+    echo 'Sending message `' . $message . '`' . PHP_EOL ;
+    $producer->publish($message);
+    sleep(1);
 }
-
-if (empty($file)) {
-    die(
-        'You need to set up the project dependencies using the following commands:' . PHP_EOL .
-        'wget http://getcomposer.org/composer.phar' . PHP_EOL .
-        'php composer.phar install' . PHP_EOL
-    );
-}
-
-/** @noinspection PhpIncludeInspection */
-require_once $file;
-
-$app = new Ko\Worker\Application();
-$app->setProcessManager(new Ko\ProcessManager());
-$app->run();
