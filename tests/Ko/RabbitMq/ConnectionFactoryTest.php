@@ -30,8 +30,9 @@
  * @license MIT http://opensource.org/licenses/MIT
  */
 use Ko\RabbitMq\ConnectionFactory;
+use PHPUnit\Framework\TestCase;
 
-class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
+class ConnectionFactoryTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException

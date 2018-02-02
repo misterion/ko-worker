@@ -30,8 +30,9 @@
  * @license MIT http://opensource.org/licenses/MIT
  */
 use Ko\RabbitMq\Producer;
+use PHPUnit\Framework\TestCase;
 
-class ProducerTest extends PHPUnit_Framework_TestCase
+class ProducerTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject

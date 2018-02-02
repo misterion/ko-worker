@@ -30,8 +30,9 @@
  * @license MIT http://opensource.org/licenses/MIT
  */
 use Ko\RabbitMq\Consumer;
+use PHPUnit\Framework\TestCase;
 
-class ConsumerTest extends PHPUnit_Framework_TestCase
+class ConsumerTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
