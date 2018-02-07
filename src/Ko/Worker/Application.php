@@ -35,8 +35,8 @@ use Closure;
 use Ko\Process;
 use Ko\ProcessManager;
 use Symfony\Component\Yaml\Yaml;
-use Ulrichsg\Getopt\Getopt;
-use Ulrichsg\Getopt\Option;
+use GetOpt\GetOpt;
+use GetOpt\Option;
 
 /**
  * Class Application
@@ -55,7 +55,7 @@ class Application
     const FAILED_EXIT = 0;
 
     /**
-     * @var Getopt
+     * @var GetOpt
      */
     protected $opts;
 
@@ -126,18 +126,18 @@ class Application
 
     protected function buildCommandLineOptions()
     {
-        $this->opts = new Getopt(
+        $this->opts = new GetOpt(
             [
-                (new Option('w', 'workers', Getopt::REQUIRED_ARGUMENT))
+                (new Option('w', 'workers', GetOpt::REQUIRED_ARGUMENT))
                     ->setDefaultValue(1)
                     ->setDescription('Worker process count'),
-                (new Option('c', 'config', Getopt::REQUIRED_ARGUMENT))
+                (new Option('c', 'config', GetOpt::REQUIRED_ARGUMENT))
                     ->setDescription('Worker configuration file'),
-                (new Option('q', 'queue', Getopt::REQUIRED_ARGUMENT))
+                (new Option('q', 'queue', GetOpt::REQUIRED_ARGUMENT))
                     ->setDescription('Consumer queue name'),
-                (new Option('d', 'demonize', Getopt::NO_ARGUMENT))
+                (new Option('d', 'demonize', GetOpt::NO_ARGUMENT))
                     ->setDescription('Run application as daemon'),
-                (new Option('f', 'fork', Getopt::NO_ARGUMENT))
+                (new Option('f', 'fork', GetOpt::NO_ARGUMENT))
                     ->setDescription('Use fork instead of spawn child process'),
             ]
         );

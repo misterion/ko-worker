@@ -30,6 +30,7 @@
  * @license MIT http://opensource.org/licenses/MIT
  */
 use Ko\AmqpBroker;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class AmqpBrokerTest
@@ -38,7 +39,7 @@ use Ko\AmqpBroker;
  * @author Vadim Sabirov <pr0head@gmail.com>
  * @version 1.0.0
  */
-class AmqpBrokerTest extends PHPUnit_Framework_TestCase
+class AmqpBrokerTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
