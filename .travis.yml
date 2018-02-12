@@ -1,5 +1,5 @@
 language: php
-
+group: edge
 php:
   - 7.0
 
