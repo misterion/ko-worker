@@ -1,5 +1,5 @@
 language: php
-group: edge
+
 php:
   - 7.0
 
@@ -11,7 +11,6 @@ install:
 
 before_script:
   - composer install --no-dev
-  - echo "extension = amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
   - php phpunit.phar --verbose --coverage-text --configuration phpunit.xml
