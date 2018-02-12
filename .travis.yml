@@ -13,7 +13,7 @@ before_script:
   - composer install --no-dev
 
 script:
-  - php phpunit.phar --verbose --coverage-text --configuration phpunit.xml
+  - ./vendor/bin/phpunit --verbose --coverage-text --configuration phpunit.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
