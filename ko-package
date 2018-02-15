@@ -30,8 +30,8 @@
  * @copyright 2014 Nikolay Bondarenko. All rights reserved.
  * @license MIT http://opensource.org/licenses/MIT
  */
-use Ulrichsg\Getopt\Getopt;
-use Ulrichsg\Getopt\Option;
+use GetOpt\GetOpt;
+use GetOpt\Option;
 
 define('KO_PACKAGE_VERSION', '0.0.1');
 
@@ -61,28 +61,28 @@ if (empty($file)) {
 require_once $file;
 
 $cmdArguments = [
-    (new Option('p', 'path', Getopt::REQUIRED_ARGUMENT))
+    (new Option('p', 'path', GetOpt::REQUIRED_ARGUMENT))
         ->setDescription('Path to application code')
         ->setValidation(function($value) {
             return file_exists($value);
         }),
-    (new Option('o', 'output', Getopt::OPTIONAL_ARGUMENT))
+    (new Option('o', 'output', GetOpt::OPTIONAL_ARGUMENT))
         ->setDefaultValue('app.phar')
         ->setDescription('Output file name'),
-    (new Option('v', 'version', Getopt::OPTIONAL_ARGUMENT))
+    (new Option('v', 'version', GetOpt::OPTIONAL_ARGUMENT))
         ->setDefaultValue('1.0.0')
         ->setDescription('Application version'),
-    (new Option('n', 'name', Getopt::OPTIONAL_ARGUMENT))
+    (new Option('n', 'name', GetOpt::OPTIONAL_ARGUMENT))
         ->setDefaultValue('MyApp')
         ->setDescription('Application name'),
-    (new Option('c', 'composer', Getopt::OPTIONAL_ARGUMENT))
+    (new Option('c', 'composer', GetOpt::OPTIONAL_ARGUMENT))
         ->setDefaultValue(false)
         ->setDescription('Use composer.json file for name and version'),
-    (new Option('e', 'exclude', Getopt::OPTIONAL_ARGUMENT))
+    (new Option('e', 'exclude', GetOpt::OPTIONAL_ARGUMENT))
         ->setDescription('Excluded folders like logs, test, etc.'),
 ];
 
-$opts = new Getopt($cmdArguments);
+$opts = new GetOpt($cmdArguments);
 
 try {
     $opts->parse();
